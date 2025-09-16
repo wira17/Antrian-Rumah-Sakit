@@ -1,28 +1,34 @@
-# 🏥 Sistem Antrian Poli Klinik / Rumah Sakit
+# 🏥 Sistem Antrian Klinik
 
-Aplikasi web sederhana untuk menampilkan **display antrian poli klinik** dengan:
-- 🎥 Video/Youtube display di layar tunggu
-- 📊 Statistik total antrian
-- 👤 Informasi pasien yang sedang dipanggil
-- 🔊 Notifikasi suara otomatis ketika nomor antrian baru dipanggil
-- ⏰ Jam digital & running text di footer
+Aplikasi web sederhana untuk menampilkan dan mengelola **sistem antrian rumah sakit/klinik**.  
+Mendukung:
+- 📊 Antrian loket/admisi/farmasi (`antrian_wira`)
+- 🏥 Antrian Poli Klinik (`antrian_poli_wira`)
+- 🔊 Notifikasi suara otomatis saat antrian dipanggil
+- 🎥 Tampilan display TV poli (YouTube + informasi pasien)
+- ⏰ Jam digital & running text di layar
 
 ---
 
 ## ⚙️ Fitur Utama
-1. **Antrian Poli**
-   - Data antrian tersimpan di tabel `antrian_poli_wira`
-   - Kolom penting: `id`, `kd_poli`, `no_reg`, `nama_pasien`, `jam_panggil`
-   - Menyimpan waktu kapan pasien dipanggil
+1. **Antrian Umum (Tabel `antrian_wira`)**
+   - Menyimpan antrian di loket, admisi, farmasi, dsb.
+   - Status default = `Menunggu`
+   - Kolom `waktu_panggil` otomatis terisi saat pasien dipanggil
 
-2. **Display TV Poli (`display_tv_poli.php`)**
-   - Menampilkan total antrian
-   - Menampilkan nomor & nama pasien yang sedang dilayani
-   - Auto update setiap 2 detik via AJAX
-   - Membaca notifikasi suara dengan **Web Speech API**
+2. **Antrian Poli (Tabel `antrian_poli_wira`)**
+   - Menyimpan data pasien yang dipanggil ke poli
+   - Menyimpan jam panggil untuk setiap nomor antrian
+   - Digunakan untuk tampilan **display_tv_poli.php**
 
-3. **API (`get_antrian_poli.php`)**
-   - Mengembalikan data JSON:
+3. **Display TV Poli**
+   - Panel kiri: Video informasi (YouTube)
+   - Panel kanan: Total antrian + pasien sedang dilayani
+   - Notifikasi suara otomatis
+   - Auto-refresh setiap 2 detik
+
+4. **API (`get_antrian_poli.php`)**
+   - Format JSON:
      ```json
      {
        "total_antrian": 12,
@@ -35,52 +41,17 @@ Aplikasi web sederhana untuk menampilkan **display antrian poli klinik** dengan:
 
 ---
 
-## 🗄️ Struktur Tabel
+## 🗄️ Struktur Tabel Database
+
+### 1. Tabel `antrian_wira`
 ```sql
-CREATE TABLE antrian_poli_wira (
+CREATE TABLE antrian_wira (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    kd_poli VARCHAR(10) NOT NULL,
-    no_reg VARCHAR(10) NOT NULL,
-    nama_pasien VARCHAR(100) NOT NULL,
-    jam_panggil DATETIME DEFAULT CURRENT_TIMESTAMP
+    jenis VARCHAR(50) NOT NULL,          -- jenis antrian: admisi, farmasi, dll
+    nomor INT NOT NULL,                  -- nomor antrian
+    no_rkm_medis VARCHAR(20),            -- nomor rekam medis pasien
+    loket_id INT,                        -- id loket
+    status VARCHAR(50) DEFAULT 'Menunggu', -- status: Menunggu / Dipanggil / Selesai
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    waktu_panggil TIMESTAMP NULL
 );
-🚀 Cara Menjalankan
-Clone repository ini ke htdocs (XAMPP) atau www (Laragon)
-
-bash
-Copy code
-git clone https://github.com/username/antrian-poli.git
-Import database:
-
-Buat database antrian
-
-Import file antrian.sql (jika tersedia)
-
-Konfigurasi database di config.php
-
-php
-Copy code
-<?php
-$conn = new mysqli("localhost","root","","antrian");
-if($conn->connect_error){
-    die("Koneksi gagal: ".$conn->connect_error);
-}
-?>
-Jalankan di browser:
-
-arduino
-Copy code
-http://localhost/antrian/display_tv_poli.php?kd_poli=U001
-📷 Tampilan
-Display TV Poli
-
-Panel kiri: Video informasi (YouTube)
-
-Panel kanan: Total antrian & pasien sedang dilayani
-
-Footer: Running text + jam digital
-
-🔊 Notifikasi Suara
-Jika ada nomor baru dipanggil, otomatis keluar suara:
-
-"Nomor antrian A05, atas nama Budi Santoso, silahkan masuk ke ruang pemeriksaan."
