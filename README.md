@@ -39,7 +39,7 @@ Mendukung:
    git clone https://github.com/username/antrian-klinik.git
 Import database (struktur tabel disediakan terpisah).
 
-Sesuaikan konfigurasi database di config.php.
+Sesuaikan konfigurasi database di config.php
 
 Jalankan aplikasi:
 
@@ -58,4 +58,5 @@ Jika ada antrian baru dipanggil, sistem otomatis berbicara:
 
 "Nomor antrian poli A05, silahkan masuk ke ruang pemeriksaan."
 
+Proses pengembangan antrian farmasi + display antrian + pemanggil antrian
 Untuk tambahan tabel via Japri : 082177846209
