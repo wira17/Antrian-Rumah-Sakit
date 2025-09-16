@@ -1,9 +1,9 @@
-# 🏥 Sistem Antrian Klinik
+# 🏥 Sistem Antrian Klinik/Rumah Sakit
 
-Aplikasi web sederhana untuk menampilkan dan mengelola **sistem antrian rumah sakit/klinik**.  
+Aplikasi web sederhana untuk **sistem antrian rumah sakit/klinik**.  
 Mendukung:
-- 📊 Antrian loket/admisi/farmasi (`antrian_wira`)
-- 🏥 Antrian Poli Klinik (`antrian_poli_wira`)
+- 📊 Antrian loket/admisi/farmasi
+- 🏥 Antrian Poli Klinik
 - 🔊 Notifikasi suara otomatis saat antrian dipanggil
 - 🎥 Tampilan display TV poli (YouTube + informasi pasien)
 - ⏰ Jam digital & running text di layar
@@ -11,47 +11,51 @@ Mendukung:
 ---
 
 ## ⚙️ Fitur Utama
-1. **Antrian Umum (Tabel `antrian_wira`)**
-   - Menyimpan antrian di loket, admisi, farmasi, dsb.
-   - Status default = `Menunggu`
-   - Kolom `waktu_panggil` otomatis terisi saat pasien dipanggil
+1. **Antrian Admisi**
+   - Menangani antrian di loket, admisi, farmasi, dsb.
+   - Menyimpan waktu panggil untuk setiap pasien.
 
-2. **Antrian Poli (Tabel `antrian_poli_wira`)**
-   - Menyimpan data pasien yang dipanggil ke poli
-   - Menyimpan jam panggil untuk setiap nomor antrian
-   - Digunakan untuk tampilan **display_tv_poli.php**
+2. **Antrian Poli**
+   - Menampilkan pasien yang dipanggil di layar TV poli.
+   - Menyimpan nomor antrian dan nama pasien.
+   - Mendukung suara otomatis ketika pasien dipanggil.
 
 3. **Display TV Poli**
    - Panel kiri: Video informasi (YouTube)
    - Panel kanan: Total antrian + pasien sedang dilayani
-   - Notifikasi suara otomatis
-   - Auto-refresh setiap 2 detik
+   - Running text di bagian bawah
+   - Jam digital real-time
+   - Auto-refresh data setiap 2 detik
 
-4. **API (`get_antrian_poli.php`)**
-   - Format JSON:
-     ```json
-     {
-       "total_antrian": 12,
-       "sedang_dilayani": {
-         "no_reg": "A05",
-         "nama_pasien": "Budi Santoso"
-       }
-     }
-     ```
+4. **API Antrian Poli**
+   - Disediakan endpoint JSON untuk mengambil data antrian terbaru.
+   - Dipakai oleh `display_tv_poli.php` untuk update data otomatis.
 
 ---
 
-## 🗄️ Struktur Tabel Database
+## 🚀 Cara Menjalankan
+1. Clone repository ke folder webserver (XAMPP: `htdocs/` atau Laragon: `www/`).
+   ```bash
+   git clone https://github.com/username/antrian-klinik.git
+Import database (struktur tabel disediakan terpisah).
 
-### 1. Tabel `antrian_wira`
-```sql
-CREATE TABLE antrian_wira (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    jenis VARCHAR(50) NOT NULL,          -- jenis antrian: admisi, farmasi, dll
-    nomor INT NOT NULL,                  -- nomor antrian
-    no_rkm_medis VARCHAR(20),            -- nomor rekam medis pasien
-    loket_id INT,                        -- id loket
-    status VARCHAR(50) DEFAULT 'Menunggu', -- status: Menunggu / Dipanggil / Selesai
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    waktu_panggil TIMESTAMP NULL
-);
+Sesuaikan konfigurasi database di config.php.
+
+Jalankan aplikasi:
+
+Display TV Poli
+
+arduino
+Copy code
+http://localhost/antrian/display_tv_poli.php?kd_poli=U001
+API antrian poli
+
+arduino
+Copy code
+http://localhost/antrian/get_antrian_poli.php?kd_poli=U001
+🔊 Notifikasi Suara
+Jika ada antrian baru dipanggil, sistem otomatis berbicara:
+
+"Nomor antrian poli A05, silahkan masuk ke ruang pemeriksaan."
+
+Untuk tambahan tabel via Japri : 082177846209
