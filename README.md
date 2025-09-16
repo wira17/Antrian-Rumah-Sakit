@@ -72,7 +72,7 @@ http://localhost/antrian/get_antrian_poli.php?kd_poli=U001
 
 Jika ada antrian baru dipanggil, sistem otomatis berbicara:
 
-"Nomor antrian poli A05, silahkan masuk ke ruang pemeriksaan."
+"Pasien atasa nama NAMA PASIEN,Silahkan ke poliklinik NAMA POLI."
 
 🔧 Proses Pengembangan
 
