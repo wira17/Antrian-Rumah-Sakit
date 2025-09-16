@@ -35,7 +35,6 @@ Mendukung:
 
 ## 🚀 Cara Menjalankan
 1. Clone repository ke folder webserver (XAMPP: `htdocs/` atau Laragon: `www/`).
-   ```bash
 Import database (struktur tabel disediakan terpisah).
 
 Sesuaikan konfigurasi database di config.php
