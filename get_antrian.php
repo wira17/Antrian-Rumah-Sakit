@@ -2,15 +2,29 @@
 include 'config.php';
 header('Content-Type: application/json');
 
-// Ambil total antrian
-$total_antrian = $conn->query("SELECT COUNT(*) AS total FROM antrian WHERE jenis='admisi'")->fetch_assoc()['total'];
+// Tanggal hari ini
+$date_today = date("Y-m-d");
 
-// Ambil nomor antrian terakhir yang sedang dilayani
-$antrian_terlayani = $conn->query(
-    "SELECT nomor FROM antrian 
-     WHERE jenis='admisi' AND status='Dipanggil' 
-     ORDER BY waktu_panggil DESC LIMIT 1"
-)->fetch_assoc()['nomor'] ?: '-';
+// Ambil total antrian HARI INI
+$total_antrian = $conn->query("
+    SELECT COUNT(*) AS total 
+    FROM antrian_wira 
+    WHERE jenis='admisi' 
+      AND DATE(created_at)='$date_today'
+")->fetch_assoc()['total'];
+
+// Ambil nomor antrian terakhir yang sedang dipanggil HARI INI
+$row = $conn->query("
+    SELECT nomor 
+    FROM antrian_wira 
+    WHERE jenis='admisi' 
+      AND status='Dipanggil' 
+      AND DATE(waktu_panggil)='$date_today'
+    ORDER BY waktu_panggil DESC 
+    LIMIT 1
+")->fetch_assoc();
+
+$antrian_terlayani = $row['nomor'] ?? '-';
 
 // Kembalikan sebagai JSON
 echo json_encode([

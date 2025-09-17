@@ -11,15 +11,22 @@ include 'config.php';
 // Tanggal hari ini
 $date_today = date("Y-m-d");
 
+// Ambil data hanya untuk hari ini
+$total_antrian = $conn->query(
+    "SELECT COUNT(*) AS total 
+     FROM antrian_wira 
+     WHERE jenis='admisi' 
+       AND DATE(created_at)='$date_today'"
+)->fetch_assoc()['total'];
 
-
-// Ambil data awal
-$total_antrian = $conn->query("SELECT COUNT(*) AS total FROM antrian_wira WHERE jenis='admisi'")->fetch_assoc()['total'];
 $antrian_terlayani = $conn->query(
     "SELECT nomor FROM antrian_wira 
-     WHERE jenis='admisi' AND status='Dipanggil' 
-     ORDER BY waktu_panggil DESC LIMIT 1"
-)->fetch_assoc()['nomor'] ?: '-';
+     WHERE jenis='admisi' 
+       AND status='Dipanggil' 
+       AND DATE(created_at)='$date_today'
+     ORDER BY waktu_panggil DESC 
+     LIMIT 1"
+)->fetch_assoc()['nomor'] ?? '-';
 ?>
 <!DOCTYPE html>
 <html>
@@ -215,7 +222,7 @@ $antrian_terlayani = $conn->query(
     <div class="info-boxes">
         <div class="info-card total">
             <i class="bi bi-list-task"></i>
-            <div>Total Antrian</div>
+            <div>Total Antrian Hari Ini</div>
             <h3 id="total_antrian"><?php echo $total_antrian; ?></h3>
         </div>
         <div class="info-card dilayani">
@@ -268,14 +275,14 @@ function updateAntrian() {
 
         // Jika ada nomor baru dipanggil → TTS bicara
         if (data.antrian_terlayani !== lastAntrian && data.antrian_terlayani !== '-') {
-           let pesan = "Antrian nomor " + data.antrian_terlayani + ", silahkan ke loket 1";
-
+            let pesan = "Antrian nomor " + data.antrian_terlayani + ", silahkan ke loket 1";
             speak(pesan);
             lastAntrian = data.antrian_terlayani;
         }
     })
     .catch(err => console.error(err));
 }
+
 
 // Update setiap 2 detik
 setInterval(updateAntrian, 2000);

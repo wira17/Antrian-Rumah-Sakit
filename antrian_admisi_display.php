@@ -11,13 +11,12 @@ include 'config.php';
 // Tanggal hari ini
 $date_today = date("Y-m-d");
 
-
-
-// Ambil nomor terakhir antrian Admisi
+// Ambil nomor terakhir antrian Admisi **hanya untuk hari ini**
 $last = $conn->query("SELECT a.nomor, a.status, l.nama_loket, a.created_at 
                       FROM antrian_wira a
                       LEFT JOIN loket l ON a.loket_id = l.id
-                      WHERE a.jenis='admisi'
+                      WHERE a.jenis='admisi' 
+                        AND DATE(a.created_at) = '$date_today'
                       ORDER BY a.nomor DESC
                       LIMIT 1")->fetch_assoc();
 ?>
@@ -120,7 +119,7 @@ $last = $conn->query("SELECT a.nomor, a.status, l.nama_loket, a.created_at
     <div class="status">
         <?php if($last): ?>
             <?php if($last['status'] == 'Menunggu'): ?>
-                
+                <span class="badge badge-menunggu"><i class="bi bi-hourglass-split"></i> Menunggu</span>
             <?php else: ?>
                 <span class="badge badge-dipanggil"><i class="bi bi-megaphone-fill"></i> Dipanggil (Loket <?php echo $last['nama_loket'] ?? '-'; ?>)</span>
             <?php endif; ?>
