@@ -54,6 +54,9 @@ Mendukung suara otomatis ketika pasien dipanggil.
 Clone repository ke folder webserver (XAMPP: htdocs/ atau Laragon: www/).
 
 Import database (struktur tabel disediakan terpisah).
+- tabel antrian_poli_wira
+- antrian_wira
+- loket
 
 Sesuaikan konfigurasi database di config.php.
 
